@@ -973,14 +973,17 @@
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove("active");
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.remove("active");
             if (id === "authModal") {
-                document.getElementById("authForm").reset();
+                const form = document.getElementById("authForm");
+                if (form) form.reset();
                 isSignUp = false;
                 updateAuthModal();
             }
             if (id === "recoveryModal") {
-                document.getElementById("recoveryForm").reset();
+                const form = document.getElementById("recoveryForm");
+                if (form) form.reset();
             }
         }
 
@@ -990,13 +993,21 @@
         }
 
         function updateAuthModal() {
-            document.getElementById("authModalTitle").textContent = isSignUp ? "Sign Up" : "Sign In";
-            document.getElementById("authModalSubtitle").textContent = isSignUp ? "Join the SSIAVerse today" : "Welcome back to the SSIAVerse";
-            document.getElementById("authBtnText").textContent = isSignUp ? "Create Account" : "Sign In";
-            document.getElementById("authToggleText").innerHTML = isSignUp
-                ? 'Already have an account? <a onclick="toggleAuthMode()">Sign In</a>'
-                : 'Do not have an account? <a onclick="toggleAuthMode()">Sign Up</a>';
-            document.getElementById("confirmPasswordGroup").style.display = isSignUp ? "block" : "none";
+            const titleEl = document.getElementById("authModalTitle");
+            const subtitleEl = document.getElementById("authModalSubtitle");
+            const btnTextEl = document.getElementById("authBtnText");
+            const toggleEl = document.getElementById("authToggleText");
+            const confirmGroup = document.getElementById("confirmPasswordGroup");
+
+            if (titleEl) titleEl.textContent = isSignUp ? "Sign Up" : "Sign In";
+            if (subtitleEl) subtitleEl.textContent = isSignUp ? "Join the SSIAVerse today" : "Welcome back to the SSIAVerse";
+            if (btnTextEl) btnTextEl.textContent = isSignUp ? "Create Account" : "Sign In";
+            if (toggleEl) {
+                toggleEl.innerHTML = isSignUp
+                    ? 'Already have an account? <a onclick="toggleAuthMode()">Sign In</a>'
+                    : 'Do not have an account? <a onclick="toggleAuthMode()">Sign Up</a>';
+            }
+            if (confirmGroup) confirmGroup.style.display = isSignUp ? "block" : "none";
         }
 
         document.querySelectorAll(".modal-overlay").forEach(function(overlay) {
@@ -1015,11 +1026,20 @@
         // ==================== AUTHENTICATION ====================
         async function handleAuth(e) {
             e.preventDefault();
-            const username = document.getElementById("authUsername").value.trim().toLowerCase();
-            const password = document.getElementById("authPassword").value;
-            const confirmPassword = document.getElementById("authConfirmPassword").value;
+            const usernameInput = document.getElementById("authUsername");
+            const passwordInput = document.getElementById("authPassword");
+            const confirmInput = document.getElementById("authConfirmPassword");
             const btn = document.getElementById("authSubmitBtn");
-            const originalText = btn.innerHTML;
+
+            if (!usernameInput || !passwordInput) {
+                showToast("Form error. Please refresh and try again.", "error");
+                return;
+            }
+
+            const username = usernameInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+            const confirmPassword = confirmInput ? confirmInput.value : "";
+            const originalText = btn ? btn.innerHTML : "Sign In";
 
             if (!username || !password) {
                 showToast("Please fill in all fields", "warning");
@@ -1037,8 +1057,10 @@
                 }
             }
 
-            btn.innerHTML = '<div class="spinner"></div>';
-            btn.disabled = true;
+            if (btn) {
+                btn.innerHTML = '<div class="spinner"></div>';
+                btn.disabled = true;
+            }
 
             try {
                 if (isSignUp) {
@@ -1110,8 +1132,10 @@
                 console.error("Auth error:", error);
                 showToast("Authentication failed: " + (error.message || "Unknown error"), "error");
             } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                if (btn) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
             }
         }
 
@@ -1126,7 +1150,7 @@
                 showHome();
                 updateNavForGuest();
             } catch (error) {
-                showToast("Sign out failed: " + error.message, "error");
+                showToast("Sign out failed: " + (error.message || "Unknown error"), "error");
             }
         }
 
@@ -1134,34 +1158,60 @@
         async function loadUserData() {
             if (!currentUser || !currentUsername) return;
 
+            const uid = currentUser.uid;
+
+            // Load account profile
             try {
-                const uid = currentUser.uid;
                 const doc = await db.collection("accounts").doc(uid).get();
                 if (doc.exists) {
                     const data = doc.data();
-                    document.getElementById("profileName").textContent = data.displayName || currentUsername;
-                    document.getElementById("profileAvatar").textContent = (data.displayName || currentUsername).charAt(0).toUpperCase();
-                    document.getElementById("profileUid").textContent = "UID: " + uid.substring(0, 12) + "...";
-                    document.getElementById("settingsUsername").value = currentUsername;
-                    document.getElementById("settingsDisplayName").value = data.displayName || "";
-                    document.getElementById("settingsEmail").value = data.email || "";
-                    document.getElementById("settingsBio").value = data.bio || "";
+                    const profileName = document.getElementById("profileName");
+                    const profileAvatar = document.getElementById("profileAvatar");
+                    const profileUid = document.getElementById("profileUid");
+                    const settingsUsername = document.getElementById("settingsUsername");
+                    const settingsDisplayName = document.getElementById("settingsDisplayName");
+                    const settingsEmail = document.getElementById("settingsEmail");
+                    const settingsBio = document.getElementById("settingsBio");
+                    const statMember = document.getElementById("statMember");
 
-                    if (data.createdAt) {
+                    if (profileName) profileName.textContent = data.displayName || currentUsername;
+                    if (profileAvatar) profileAvatar.textContent = (data.displayName || currentUsername).charAt(0).toUpperCase();
+                    if (profileUid) profileUid.textContent = "UID: " + uid.substring(0, 12) + "...";
+                    if (settingsUsername) settingsUsername.value = currentUsername;
+                    if (settingsDisplayName) settingsDisplayName.value = data.displayName || "";
+                    if (settingsEmail) settingsEmail.value = data.email || "";
+                    if (settingsBio) settingsBio.value = data.bio || "";
+
+                    if (data.createdAt && statMember) {
                         const date = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
-                        document.getElementById("statMember").textContent = date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+                        statMember.textContent = date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
                     }
                 }
+            } catch (error) {
+                console.error("Load profile error:", error);
+            }
 
+            // Load cloud saves count (using username as key per your rules)
+            try {
                 const savesSnapshot = await db.collection("vaultsave").doc(currentUsername).collection("saves").get();
-                document.getElementById("statSaves").textContent = savesSnapshot.size;
-
-                const gamesSnapshot = await db.collection("accounts").doc(uid).collection("linkedGames").get();
-                document.getElementById("statGames").textContent = gamesSnapshot.size;
-
+                const statSaves = document.getElementById("statSaves");
+                if (statSaves) statSaves.textContent = savesSnapshot.size;
                 loadSavesList(savesSnapshot);
             } catch (error) {
-                console.error("Load user data error:", error);
+                console.error("Load saves error:", error);
+                const statSaves = document.getElementById("statSaves");
+                if (statSaves) statSaves.textContent = "0";
+            }
+
+            // Load linked games count
+            try {
+                const gamesSnapshot = await db.collection("accounts").doc(uid).collection("linkedGames").get();
+                const statGames = document.getElementById("statGames");
+                if (statGames) statGames.textContent = gamesSnapshot.size;
+            } catch (error) {
+                console.error("Load games error:", error);
+                const statGames = document.getElementById("statGames");
+                if (statGames) statGames.textContent = "0";
             }
         }
 
@@ -1192,9 +1242,13 @@
             e.preventDefault();
             if (!currentUser) return;
 
-            const displayName = document.getElementById("settingsDisplayName").value.trim();
-            const email = document.getElementById("settingsEmail").value.trim();
-            const bio = document.getElementById("settingsBio").value.trim();
+            const displayNameInput = document.getElementById("settingsDisplayName");
+            const emailInput = document.getElementById("settingsEmail");
+            const bioInput = document.getElementById("settingsBio");
+
+            const displayName = displayNameInput ? displayNameInput.value.trim() : "";
+            const email = emailInput ? emailInput.value.trim() : "";
+            const bio = bioInput ? bioInput.value.trim() : "";
 
             try {
                 await db.collection("accounts").doc(currentUser.uid).update({
@@ -1217,9 +1271,13 @@
             e.preventDefault();
             if (!currentUsername) return;
 
-            const currentPass = document.getElementById("currentPassword").value;
-            const newPass = document.getElementById("newPassword").value;
-            const confirmPass = document.getElementById("confirmPassword").value;
+            const currentPassInput = document.getElementById("currentPassword");
+            const newPassInput = document.getElementById("newPassword");
+            const confirmPassInput = document.getElementById("confirmPassword");
+
+            const currentPass = currentPassInput ? currentPassInput.value : "";
+            const newPass = newPassInput ? newPassInput.value : "";
+            const confirmPass = confirmPassInput ? confirmPassInput.value : "";
 
             if (newPass !== confirmPass) {
                 showToast("New passwords do not match", "error");
@@ -1249,6 +1307,7 @@
         function checkPasswordStrength(password) {
             const bar = document.getElementById("passwordStrengthBar");
             const hint = document.getElementById("passwordHint");
+            if (!bar || !hint) return;
             let strength = 0;
             if (password.length >= 8) strength++;
             if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
@@ -1264,7 +1323,9 @@
         // ==================== PASSWORD RECOVERY ====================
         async function handleRecovery(e) {
             e.preventDefault();
-            const username = document.getElementById("recoveryUsername").value.trim().toLowerCase();
+            const usernameInput = document.getElementById("recoveryUsername");
+            if (!usernameInput) return;
+            const username = usernameInput.value.trim().toLowerCase();
 
             try {
                 const usernameDoc = await db.collection("usernameMappings").doc(username).get();
@@ -1299,7 +1360,10 @@
             if (!confirm("WARNING: This will permanently delete your account and all data. This action cannot be undone. Are you sure?")) return;
             if (!confirm("FINAL WARNING: This is irreversible. Confirm deletion?")) return;
 
-            if (!currentUser || !currentUsername) return;
+            if (!currentUser || !currentUsername) {
+                showToast("Not signed in", "error");
+                return;
+            }
 
             try {
                 await db.collection("usernameMappings").doc(currentUsername).delete();
