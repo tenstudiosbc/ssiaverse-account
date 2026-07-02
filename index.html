@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSIAVerse Account | Your Gateway to the SSIAVerse</title>
+    <meta name="description" content="SSIAVerse Account - Manage your SSIAVerse profile, linked games, and cloud saves for SSIA Vanguard Chronicles and SSIA ShadowFront. Your gateway to the SSIAVerse universe.">
+    <meta name="keywords" content="SSIAVerse, SSIA Vanguard Chronicles, SSIA ShadowFront, SSIAVC, game account, cloud saves, RPG, TSBC Games">
+    <meta name="author" content="TSBC Games Division">
+    <meta name="theme-color" content="#0a0a1a">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ssiavc.github.io/">
+    <meta property="og:title" content="SSIAVerse Account | Your Gateway to the SSIAVerse">
+    <meta property="og:description" content="Manage your SSIAVerse profile, linked games, and cloud saves for SSIA Vanguard Chronicles and SSIA ShadowFront.">
+    <meta property="og:image" content="https://i.ibb.co.com/4wc1VLJy/20260620-111209.png">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ssiavc.github.io/">
+    <meta property="twitter:title" content="SSIAVerse Account | Your Gateway to the SSIAVerse">
+    <meta property="twitter:description" content="Manage your SSIAVerse profile, linked games, and cloud saves for SSIA Vanguard Chronicles and SSIA ShadowFront.">
+    <meta property="twitter:image" content="https://i.ibb.co.com/4wc1VLJy/20260620-111209.png">
+
+    <link rel="icon" type="image/png" href="https://i.ibb.co.com/4wc1VLJy/20260620-111209.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #818cf8;
+            --accent: #06b6d4; --accent-glow: rgba(6,182,212,0.3);
+            --bg-dark: #0a0a1a; --bg-card: rgba(15,15,35,0.85); --bg-glass: rgba(20,20,45,0.6);
+            --border-glow: rgba(99,102,241,0.3); --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b;
+            --danger: #ef4444; --success: #22c55e; --warning: #f59e0b;
+            --gradient-1: linear-gradient(135deg,#6366f1 0%,#06b6d4 100%);
+            --gradient-2: linear-gradient(135deg,#06b6d4 0%,#8b5cf6 100%);
+            --gradient-3: linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);
+            --shadow-glow: 0 0 30px rgba(99,102,241,0.2); --shadow-card: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:var(--bg-dark); color:var(--text-primary); min-height:100vh; overflow-x:hidden; position:relative; }
+
+        .bg-animation { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; background:var(--bg-dark); overflow:hidden; }
+        .bg-animation::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+            background: radial-gradient(circle at 20% 80%,rgba(99,102,241,0.08) 0%,transparent 50%),
+                        radial-gradient(circle at 80% 20%,rgba(6,182,212,0.08) 0%,transparent 50%),
+                        radial-gradient(circle at 50% 50%,rgba(139,92,246,0.05) 0%,transparent 50%);
+            animation:bgFloat 20s ease-in-out infinite; }
+        .stars { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; pointer-events:none; }
+        .star { position:absolute; width:2px; height:2px; background:white; border-radius:50%;
+                animation:twinkle var(--duration) ease-in-out infinite; opacity:var(--opacity); }
+
+        @keyframes twinkle { 0%,100%{opacity:var(--opacity);transform:scale(1)} 50%{opacity:0.2;transform:scale(0.5)} }
+        @keyframes bgFloat { 0%,100%{transform:translate(0,0) rotate(0deg)} 33%{transform:translate(2%,2%) rotate(1deg)} 66%{transform:translate(-1%,1%) rotate(-1deg)} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+        @keyframes pulse-glow { 0%,100%{box-shadow:0 0 20px rgba(99,102,241,0.3)} 50%{box-shadow:0 0 40px rgba(99,102,241,0.6)} }
+        @keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes scaleIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+        @keyframes scrollLeft { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+        @keyframes scrollRight { 0%{transform:translateX(-50%)} 100%{transform:translateX(0)} }
+        @keyframes spin { to{transform:rotate(360deg)} }
+
+        .navbar { position:fixed; top:0; left:0; right:0; z-index:1000; padding:1rem 2rem;
+                  background:rgba(10,10,26,0.8); backdrop-filter:blur(20px); border-bottom:1px solid rgba(99,102,241,0.1); transition:all 0.3s ease; }
+        .navbar.scrolled { background:rgba(10,10,26,0.95); box-shadow:0 4px 30px rgba(0,0,0,0.3); }
+        .nav-container { max-width:1400px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; }
+        .nav-logo { display:flex; align-items:center; gap:0.75rem; text-decoration:none; }
+        .nav-logo img { height:40px; width:auto; filter:drop-shadow(0 0 10px rgba(99,102,241,0.5)); }
+        .nav-logo span { font-family:'Orbitron',sans-serif; font-size:1.5rem; font-weight:700;
+                         background:var(--gradient-1); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .nav-links { display:flex; align-items:center; gap:2rem; }
+        .nav-link { color:var(--text-secondary); text-decoration:none; font-family:'Rajdhani',sans-serif;
+                    font-weight:600; font-size:1rem; letter-spacing:0.5px; transition:color 0.3s ease; position:relative; }
+        .nav-link::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:var(--gradient-1); transition:width 0.3s ease; }
+        .nav-link:hover { color:var(--text-primary); }
+        .nav-link:hover::after { width:100%; }
+        .nav-user { display:flex; align-items:center; gap:1rem; }
+        .user-avatar { width:38px; height:38px; border-radius:50%; background:var(--gradient-1); display:flex; align-items:center; justify-content:center;
+                       font-family:'Orbitron',sans-serif; font-weight:700; font-size:0.9rem; color:white; border:2px solid rgba(99,102,241,0.5);
+                       cursor:pointer; transition:all 0.3s ease; }
+        .user-avatar:hover { transform:scale(1.1); box-shadow:0 0 20px rgba(99,102,241,0.5); }
+
+        .btn { padding:0.6rem 1.5rem; border-radius:12px; border:none; font-family:'Rajdhani',sans-serif; font-weight:700;
+               font-size:0.95rem; letter-spacing:0.5px; cursor:pointer; transition:all 0.3s ease; display:inline-flex;
+               align-items:center; justify-content:center; gap:0.5rem; text-decoration:none; }
+        .btn-primary { background:var(--gradient-1); color:white; box-shadow:0 4px 15px rgba(99,102,241,0.3); }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(99,102,241,0.4); }
+        .btn-outline { background:transparent; color:var(--text-primary); border:1px solid rgba(99,102,241,0.4); }
+        .btn-outline:hover { background:rgba(99,102,241,0.1); border-color:var(--primary); }
+        .btn-danger { background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%); color:white; }
+        .btn-danger:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(239,68,68,0.3); }
+        .btn-sm { padding:0.4rem 1rem; font-size:0.85rem; }
+
+        .main-content { padding-top:80px; min-height:100vh; }
+
+        .hero { min-height:calc(100vh - 80px); display:flex; align-items:center; justify-content:center; text-align:center; padding:2rem; position:relative; }
+        .hero-content { max-width:800px; animation:slideUp 0.8s ease-out; }
+        .hero-logo { width:180px; height:auto; margin-bottom:2rem; animation:float 4s ease-in-out infinite;
+                     filter:drop-shadow(0 0 30px rgba(99,102,241,0.4)); }
+        .hero h1 { font-family:'Orbitron',sans-serif; font-size:clamp(2.5rem,6vw,4.5rem); font-weight:900; line-height:1.1; margin-bottom:1rem;
+                   background:linear-gradient(135deg,#f1f5f9 0%,#818cf8 50%,#06b6d4 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .hero p { font-size:1.2rem; color:var(--text-secondary); margin-bottom:2rem; max-width:600px; margin-left:auto; margin-right:auto; line-height:1.7; }
+        .hero-buttons { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+        .hero-buttons .btn { padding:0.9rem 2.5rem; font-size:1.1rem; }
+
+        .game-showcase { padding:4rem 2rem; overflow:hidden; }
+        .section-title { font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:700; text-align:center; margin-bottom:3rem;
+                         background:var(--gradient-1); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .games-scroll-container { position:relative; width:100%; overflow:hidden; padding:1rem 0; }
+        .games-scroll { display:flex; gap:2rem; animation:scrollLeft 30s linear infinite; width:max-content; }
+        .games-scroll:hover { animation-play-state:paused; }
+        .games-scroll-reverse { animation:scrollRight 35s linear infinite; margin-top:2rem; }
+
+        .game-card { flex-shrink:0; width:320px; background:var(--bg-card); border:1px solid rgba(99,102,241,0.15); border-radius:20px;
+                     overflow:hidden; transition:all 0.4s cubic-bezier(0.4,0,0.2,1); cursor:pointer; position:relative; }
+        .game-card::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+                             background:linear-gradient(180deg,transparent 50%,rgba(10,10,26,0.9) 100%); z-index:1; pointer-events:none; }
+        .game-card:hover { transform:translateY(-10px) scale(1.02); border-color:var(--primary); box-shadow:0 20px 40px rgba(99,102,241,0.2); }
+        .game-card img { width:100%; height:200px; object-fit:cover; transition:transform 0.4s ease; }
+        .game-card:hover img { transform:scale(1.1); }
+        .game-card-content { padding:1.5rem; position:relative; z-index:2; }
+        .game-card h3 { font-family:'Orbitron',sans-serif; font-size:1.3rem; margin-bottom:0.5rem; color:var(--text-primary); }
+        .game-card p { color:var(--text-secondary); font-size:0.9rem; line-height:1.5; }
+        .game-badge { display:inline-block; padding:0.25rem 0.75rem; border-radius:20px; font-size:0.75rem; font-weight:600;
+                      margin-top:0.75rem; font-family:'Rajdhani',sans-serif; }
+        .badge-rpg { background:rgba(99,102,241,0.2); color:var(--primary-light); border:1px solid rgba(99,102,241,0.3); }
+        .badge-action { background:rgba(6,182,212,0.2); color:var(--accent); border:1px solid rgba(6,182,212,0.3); }
+
+        .dashboard { display:none; padding:2rem; max-width:1400px; margin:0 auto; animation:fadeIn 0.5s ease; }
+        .dashboard.active { display:block; }
+        .dashboard-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1rem; }
+        .dashboard-header h2 { font-family:'Orbitron',sans-serif; font-size:1.8rem;
+                               background:var(--gradient-1); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .dashboard-grid { display:grid; grid-template-columns:300px 1fr; gap:2rem; }
+        @media(max-width:1024px){ .dashboard-grid{grid-template-columns:1fr} }
+
+        .sidebar { background:var(--bg-card); border:1px solid rgba(99,102,241,0.1); border-radius:20px; padding:2rem; height:fit-content; position:sticky; top:100px; }
+        .profile-card { text-align:center; padding-bottom:2rem; border-bottom:1px solid rgba(99,102,241,0.1); margin-bottom:1.5rem; }
+        .profile-avatar { width:100px; height:100px; border-radius:50%; background:var(--gradient-1); display:flex; align-items:center; justify-content:center;
+                          margin:0 auto 1rem; font-family:'Orbitron',sans-serif; font-size:2.5rem; font-weight:900; color:white;
+                          border:3px solid rgba(99,102,241,0.3); box-shadow:0 0 30px rgba(99,102,241,0.2); }
+        .profile-name { font-family:'Orbitron',sans-serif; font-size:1.3rem; font-weight:700; margin-bottom:0.25rem; }
+        .profile-uid { font-size:0.8rem; color:var(--text-muted); font-family:'Rajdhani',sans-serif; word-break:break-all; }
+        .sidebar-menu { list-style:none; }
+        .sidebar-menu li { margin-bottom:0.5rem; }
+        .sidebar-menu a { display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; border-radius:12px; color:var(--text-secondary);
+                          text-decoration:none; font-family:'Rajdhani',sans-serif; font-weight:600; font-size:1rem; transition:all 0.3s ease; cursor:pointer; }
+        .sidebar-menu a:hover,.sidebar-menu a.active { background:rgba(99,102,241,0.1); color:var(--primary-light); }
+        .sidebar-menu a.active { border-left:3px solid var(--primary); }
+        .sidebar-menu i { width:20px; text-align:center; }
+
+        .dashboard-content { background:var(--bg-card); border:1px solid rgba(99,102,241,0.1); border-radius:20px; padding:2rem; }
+        .content-section { display:none; animation:fadeIn 0.4s ease; }
+        .content-section.active { display:block; }
+        .content-section h3 { font-family:'Orbitron',sans-serif; font-size:1.4rem; margin-bottom:1.5rem; color:var(--text-primary); }
+
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-bottom:2rem; }
+        .stat-card { background:var(--bg-glass); border:1px solid rgba(99,102,241,0.1); border-radius:16px; padding:1.5rem; text-align:center; transition:all 0.3s ease; }
+        .stat-card:hover { border-color:var(--primary); transform:translateY(-3px); }
+        .stat-icon { width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.3rem; }
+        .stat-icon.blue { background:rgba(99,102,241,0.15); color:var(--primary-light); }
+        .stat-icon.cyan { background:rgba(6,182,212,0.15); color:var(--accent); }
+        .stat-icon.purple { background:rgba(139,92,246,0.15); color:#a78bfa; }
+        .stat-icon.green { background:rgba(34,197,94,0.15); color:var(--success); }
+        .stat-value { font-family:'Orbitron',sans-serif; font-size:1.8rem; font-weight:700; color:var(--text-primary); }
+        .stat-label { font-size:0.85rem; color:var(--text-secondary); margin-top:0.25rem; }
+
+        .linked-games-list { display:flex; flex-direction:column; gap:1rem; }
+        .linked-game-item { display:flex; align-items:center; gap:1.5rem; padding:1.5rem; background:var(--bg-glass);
+                            border:1px solid rgba(99,102,241,0.1); border-radius:16px; transition:all 0.3s ease; }
+        .linked-game-item:hover { border-color:var(--primary); transform:translateX(5px); }
+        .linked-game-img { width:80px; height:80px; border-radius:12px; object-fit:cover; border:2px solid rgba(99,102,241,0.2); }
+        .linked-game-info { flex:1; }
+        .linked-game-info h4 { font-family:'Orbitron',sans-serif; font-size:1.1rem; margin-bottom:0.25rem; }
+        .linked-game-info p { color:var(--text-secondary); font-size:0.9rem; }
+        .linked-game-status { display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--success); font-weight:600; }
+        .status-dot { width:8px; height:8px; border-radius:50%; background:var(--success); box-shadow:0 0 10px var(--success); animation:pulse-glow 2s ease-in-out infinite; }
+
+        .saves-list { display:flex; flex-direction:column; gap:1rem; }
+        .save-item { display:flex; align-items:center; justify-content:space-between; padding:1.25rem; background:var(--bg-glass);
+                     border:1px solid rgba(99,102,241,0.1); border-radius:14px; transition:all 0.3s ease; }
+        .save-item:hover { border-color:var(--primary); }
+        .save-info { display:flex; align-items:center; gap:1rem; }
+        .save-icon { width:45px; height:45px; border-radius:10px; background:rgba(99,102,241,0.15); display:flex; align-items:center; justify-content:center;
+                     color:var(--primary-light); font-size:1.1rem; }
+        .save-details h4 { font-size:1rem; margin-bottom:0.15rem; }
+        .save-details p { font-size:0.8rem; color:var(--text-muted); }
+        .save-actions { display:flex; gap:0.5rem; }
+
+        .settings-form { display:flex; flex-direction:column; gap:1.5rem; }
+        .form-group { display:flex; flex-direction:column; gap:0.5rem; }
+        .form-group label { font-family:'Rajdhani',sans-serif; font-weight:600; font-size:0.95rem; color:var(--text-secondary); }
+        .form-input { padding:0.9rem 1rem; background:rgba(15,15,35,0.6); border:1px solid rgba(99,102,241,0.2); border-radius:12px;
+                      color:var(--text-primary); font-family:'Inter',sans-serif; font-size:0.95rem; transition:all 0.3s ease; outline:none; }
+        .form-input:focus { border-color:var(--primary); box-shadow:0 0 15px rgba(99,102,241,0.15); }
+        .form-input::placeholder { color:var(--text-muted); }
+        .form-input:disabled { opacity:0.6; cursor:not-allowed; }
+        .input-hint { font-size:0.8rem; color:var(--text-muted); }
+        .password-strength { height:4px; border-radius:2px; margin-top:0.5rem; background:rgba(255,255,255,0.1); overflow:hidden; }
+        .password-strength-bar { height:100%; border-radius:2px; transition:all 0.3s ease; width:0%; }
+        .strength-weak { background:var(--danger); width:33%; }
+        .strength-medium { background:var(--warning); width:66%; }
+        .strength-strong { background:var(--success); width:100%; }
+
+        .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px);
+                         z-index:2000; display:none; align-items:center; justify-content:center; padding:1rem; animation:fadeIn 0.3s ease; }
+        .modal-overlay.active { display:flex; }
+        .modal { background:var(--bg-card); border:1px solid rgba(99,102,241,0.2); border-radius:24px; padding:2.5rem; max-width:420px; width:100%;
+                 position:relative; animation:scaleIn 0.3s ease; box-shadow:0 25px 50px rgba(0,0,0,0.5),var(--shadow-glow); }
+        .modal-close { position:absolute; top:1rem; right:1rem; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.05);
+                       border:1px solid rgba(99,102,241,0.2); color:var(--text-secondary); cursor:pointer; display:flex; align-items:center; justify-content:center;
+                       transition:all 0.3s ease; font-size:1rem; }
+        .modal-close:hover { background:rgba(239,68,68,0.1); color:var(--danger); border-color:var(--danger); }
+        .modal-logo { width:80px; height:auto; margin:0 auto 1.5rem; display:block; filter:drop-shadow(0 0 15px rgba(99,102,241,0.4)); }
+        .modal h2 { font-family:'Orbitron',sans-serif; font-size:1.5rem; text-align:center; margin-bottom:0.5rem;
+                    background:var(--gradient-1); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .modal-subtitle { text-align:center; color:var(--text-secondary); font-size:0.9rem; margin-bottom:2rem; }
+        .modal-form { display:flex; flex-direction:column; gap:1rem; }
+        .modal-form .form-group { margin-bottom:0; }
+        .modal-form .btn { margin-top:0.5rem; padding:0.9rem; font-size:1rem; }
+        .modal-footer { text-align:center; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid rgba(99,102,241,0.1); }
+        .modal-footer p { color:var(--text-secondary); font-size:0.9rem; }
+        .modal-footer a { color:var(--primary-light); text-decoration:none; font-weight:600; cursor:pointer; transition:color 0.3s ease; }
+        .modal-footer a:hover { color:var(--accent); text-decoration:underline; }
+
+        .toast-container { position:fixed; top:100px; right:2rem; z-index:3000; display:flex; flex-direction:column; gap:0.75rem; }
+        .toast { padding:1rem 1.5rem; border-radius:12px; background:var(--bg-card); border:1px solid; display:flex; align-items:center; gap:0.75rem;
+                 min-width:300px; max-width:400px; animation:slideUp 0.3s ease; box-shadow:0 10px 30px rgba(0,0,0,0.3); backdrop-filter:blur(10px); }
+        .toast.success { border-color:rgba(34,197,94,0.3); color:var(--success); }
+        .toast.error { border-color:rgba(239,68,68,0.3); color:var(--danger); }
+        .toast.warning { border-color:rgba(245,158,11,0.3); color:var(--warning); }
+        .toast.info { border-color:rgba(99,102,241,0.3); color:var(--primary-light); }
+
+        .spinner { width:20px; height:20px; border:2px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 0.8s linear infinite; }
+
+        .empty-state { text-align:center; padding:3rem 2rem; color:var(--text-muted); }
+        .empty-state i { font-size:3rem; margin-bottom:1rem; opacity:0.5; }
+        .empty-state h4 { font-family:'Orbitron',sans-serif; font-size:1.2rem; margin-bottom:0.5rem; color:var(--text-secondary); }
+
+        .footer { text-align:center; padding:2rem; color:var(--text-muted); font-size:0.85rem; border-top:1px solid rgba(99,102,241,0.1); margin-top:2rem; }
+        .footer a { color:var(--primary-light); text-decoration:none; }
+
+        .danger-zone { margin-top:2rem; padding-top:2rem; border-top:1px solid rgba(239,68,68,0.2); }
+        .danger-zone h4 { font-family:'Orbitron',sans-serif; color:var(--danger); font-size:1.1rem; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+        .danger-zone p { color:var(--text-secondary); font-size:0.9rem; margin-bottom:1rem; }
+
+        .recovery-info { background:rgba(99,102,241,0.05); border:1px solid rgba(99,102,241,0.15); border-radius:12px; padding:1rem;
+                         font-size:0.9rem; color:var(--text-secondary); line-height:1.6; }
+        .recovery-info i { color:var(--primary-light); margin-right:0.5rem; }
+
+        .hidden { display:none !important; }
+
+        ::-webkit-scrollbar { width:8px; }
+        ::-webkit-scrollbar-track { background:var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background:rgba(99,102,241,0.3); border-radius:4px; }
+        ::-webkit-scrollbar-thumb:hover { background:rgba(99,102,241,0.5); }
+
+        @media(max-width:768px){
+            .navbar { padding:0.75rem 1rem; }
+            .nav-links { display:none; }
+            .hero { padding:1rem; }
+            .hero-logo { width:120px; }
+            .modal { padding:1.5rem; margin:1rem; }
+            .dashboard { padding:1rem; }
+            .dashboard-content { padding:1.25rem; }
+            .sidebar { position:static; }
+            .linked-game-item { flex-direction:column; text-align:center; }
+            .save-item { flex-direction:column; gap:1rem; text-align:center; }
+            .save-actions { width:100%; justify-content:center; }
+            .game-card { width:280px; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="stars" id="stars"></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo" onclick="showHome();return false;">
+                <img src="https://i.ibb.co.com/4wc1VLJy/20260620-111209.png" alt="SSIAVerse Logo">
+                <span>SSIAVerse</span>
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="#" class="nav-link" onclick="showHome();return false;">Home</a>
+                <a href="#games" class="nav-link" onclick="scrollToGames();return false;">Games</a>
+                <a href="#" class="nav-link" onclick="showSupport();return false;">Support</a>
+            </div>
+            <div class="nav-user" id="navUser">
+                <button class="btn btn-primary" onclick="openSignInModal()">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div id="homePage">
+            <section class="hero">
+                <div class="hero-content">
+                    <img src="https://i.ibb.co.com/4wc1VLJy/20260620-111209.png" alt="SSIAVerse Logo" class="hero-logo">
+                    <h1>SSIAVerse Account</h1>
+                    <p>Your gateway to the SSIAVerse universe. Manage your profile, link your games, and sync your cloud saves across all devices.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="openSignInModal()">
+                            <i class="fas fa-rocket"></i> Get Started
+                        </button>
+                        <button class="btn btn-outline" onclick="scrollToGames()">
+                            <i class="fas fa-gamepad"></i> Explore Games
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="game-showcase" id="games">
+                <h2 class="section-title"><i class="fas fa-diamond"></i> Featured Games</h2>
+
+                <div class="games-scroll-container">
+                    <div class="games-scroll" id="gamesScroll1">
+                        <div class="game-card">
+                            <img src="https://i.ibb.co.com/VYRrnKt1/20260417-104731.png" alt="SSIA Vanguard Chronicles">
+                            <div class="game-card-content">
+                                <h3>SSIA Vanguard Chronicles</h3>
+                                <p>Embark on an epic journey through the SSIAVerse. Lead your vanguard, forge alliances, and uncover the secrets of a universe on the brink.</p>
+                                <span class="game-badge badge-rpg"><i class="fas fa-dragon"></i> RPG</span>
+                                <span class="game-badge badge-action"><i class="fas fa-bolt"></i> Action</span>
+                            </div>
+                        </div>
+                        <div class="game-card">
+                            <img src="https://i.ibb.co.com/CKvFpqnk/20260303-162840.png" alt="SSIA ShadowFront">
+                            <div class="game-card-content">
+                                <h3>SSIA ShadowFront</h3>
+                                <p>Step into the shadows. A tactical espionage experience set in the darker corners of the SSIAVerse where every choice shapes the future.</p>
+                                <span class="game-badge badge-action"><i class="fas fa-crosshairs"></i> Tactical</span>
+                                <span class="game-badge badge-rpg"><i class="fas fa-user-secret"></i> Stealth</span>
+                            </div>
+                        </div>
+                        <div class="game-card">
+                            <img src="https://i.ibb.co.com/VYRrnKt1/20260417-104731.png" alt="SSIA Vanguard Chronicles">
+                            <div class="game-card-content">
+                                <h3>SSIA Vanguard Chronicles</h3>
+                                <p>Embark on an epic journey through the SSIAVerse. Lead your vanguard, forge alliances, and uncover the secrets of a universe on the brink.</p>
+                                <span class="game-badge badge-rpg"><i class="fas fa-dragon"></i> RPG</span>
+                                <span class="game-badge badge-action"><i class="fas fa-bolt"></i> Action</span>
+                            </div>
+                        </div>
+                        <div class="game-card">
+                            <img src="https://i.ibb.co.com/CKvFpqnk/20260303-162840.png" alt="SSIA ShadowFront">
+                            <div class="game-card-content">
+                                <h3>SSIA ShadowFront</h3>
+                                <p>Step into the shadows. A tactical espionage experience set in the darker corners of the SSIAVerse where every choice shapes the future.</p>
+                                <span class="game-badge badge-action"><i class="fas fa-crosshairs"></i> Tactical</span>
+                                <span class="game-badge badge-rpg"><i class="fas fa-user-secret"></i> Stealth</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="games-scroll-container">
+                    <div class="games-scroll games-scroll-reverse" id="gamesScroll2">
+                        <div class="game-card">
+                            <img src="https://i.ibb.co.com/CKvFpqnk/20260303-162840.png" alt="SSIA ShadowFront">
+                            <div class="game-card-content">
+                                <h3>SSIA ShadowFront</h3>
+                                <p>Step into the shadows. A tactical espionage experience set in the darker corners of the SSIAVerse where every choice shapes the future.</p>
+                                <span class="game-badge badge-action"><i class="fas fa-crosshairs"></i> Tactical</span>
+                            </div>
+                        </div>
+                        <div class="game-card">
+                            <img src="https://i.ibb.co.com/VYRrnKt1/20260417-104731.png" alt="SSIA Vanguard Chronicles">
+                            <div class="game-card-content">
+                                <h3>SSIA Vanguard Chronicles</h3>
+                                <p>Embark on an epic journey through the SSIAVerse. Lead your vanguard, forge alliances, and uncover the secrets of a universe on the brink.</p>
+                                <span class="game-badge badge-rpg"><i class="fas fa-dragon"></i> RPG</span>
+                            </div>
+                        </div>
+                        <div class="game-card">
+                            <img src="https://i.ibb.co.com/CKvFpqnk/20260303-162840.png" alt="SSIA ShadowFront">
+                            <div class="game-card-content">
+                                <h3>SSIA ShadowFront</h3>
+                                <p>Step into the shadows. A tactical espionage experience set in the darker corners of the SSIAVerse where every choice shapes the future.</p>
+                                <span class="game-badge badge-action"><i class="fas fa-crosshairs"></i> Tactical</span>
+                            </div>
+                        </div>
+                        <div class="game-card">
+                            <img src="https://i.ibb.co.com/VYRrnKt1/20260417-104731.png" alt="SSIA Vanguard Chronicles">
+                            <div class="game-card-content">
+                                <h3>SSIA Vanguard Chronicles</h3>
+                                <p>Embark on an epic journey through the SSIAVerse. Lead your vanguard, forge alliances, and uncover the secrets of a universe on the brink.</p>
+                                <span class="game-badge badge-rpg"><i class="fas fa-dragon"></i> RPG</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <p>&copy; SSIAVerse. All rights reserved. | Part of the <strong>TSBC Games Division</strong></p>
+                <p style="margin-top:0.5rem;font-size:0.75rem;">Powered by Firebase | SSIAVerse Account System</p>
+            </footer>
+        </div>
+
+        <div class="dashboard" id="dashboard">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-th-large"></i> Dashboard</h2>
+                <button class="btn btn-outline btn-sm" onclick="signOut()">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </button>
+            </div>
+
+            <div class="dashboard-grid">
+                <aside class="sidebar">
+                    <div class="profile-card">
+                        <div class="profile-avatar" id="profileAvatar">?</div>
+                        <div class="profile-name" id="profileName">Guest</div>
+                        <div class="profile-uid" id="profileUid">Not signed in</div>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="active" onclick="showSection('overview');return false;" data-section="overview"><i class="fas fa-home"></i> Overview</a></li>
+                        <li><a href="#" onclick="showSection('games');return false;" data-section="games"><i class="fas fa-gamepad"></i> Linked Games</a></li>
+                        <li><a href="#" onclick="showSection('saves');return false;" data-section="saves"><i class="fas fa-cloud"></i> Cloud Saves</a></li>
+                        <li><a href="#" onclick="showSection('account');return false;" data-section="account"><i class="fas fa-cog"></i> Account Settings</a></li>
+                        <li><a href="#" onclick="showSection('security');return false;" data-section="security"><i class="fas fa-shield-alt"></i> Security</a></li>
+                    </ul>
+                </aside>
+
+                <div class="dashboard-content">
+                    <div class="content-section active" id="section-overview">
+                        <h3><i class="fas fa-chart-line"></i> Account Overview</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon blue"><i class="fas fa-gamepad"></i></div>
+                                <div class="stat-value" id="statGames">0</div>
+                                <div class="stat-label">Linked Games</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon cyan"><i class="fas fa-cloud"></i></div>
+                                <div class="stat-value" id="statSaves">0</div>
+                                <div class="stat-label">Cloud Saves</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon purple"><i class="fas fa-clock"></i></div>
+                                <div class="stat-value" id="statMember">New</div>
+                                <div class="stat-label">Member Since</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                                <div class="stat-value">Active</div>
+                                <div class="stat-label">Account Status</div>
+                            </div>
+                        </div>
+                        <h3 style="margin-top:2rem;"><i class="fas fa-bolt"></i> Quick Actions</h3>
+                        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
+                            <button class="btn btn-primary" onclick="showSection('games')"><i class="fas fa-link"></i> Link a Game</button>
+                            <button class="btn btn-outline" onclick="showSection('saves')"><i class="fas fa-download"></i> Manage Saves</button>
+                            <button class="btn btn-outline" onclick="showSection('account')"><i class="fas fa-user-edit"></i> Edit Profile</button>
+                        </div>
+                    </div>
+
+                    <div class="content-section" id="section-games">
+                        <h3><i class="fas fa-gamepad"></i> Linked Games</h3>
+                        <div class="linked-games-list" id="linkedGamesList">
+                            <div class="linked-game-item">
+                                <img src="https://i.ibb.co.com/VYRrnKt1/20260417-104731.png" alt="SSIA VC" class="linked-game-img">
+                                <div class="linked-game-info">
+                                    <h4>SSIA Vanguard Chronicles</h4>
+                                    <p>RPG / Action | Last played: Just now</p>
+                                </div>
+                                <div class="linked-game-status"><span class="status-dot"></span> Linked</div>
+                            </div>
+                            <div class="linked-game-item">
+                                <img src="https://i.ibb.co.com/CKvFpqnk/20260303-162840.png" alt="SSIA SF" class="linked-game-img">
+                                <div class="linked-game-info">
+                                    <h4>SSIA ShadowFront</h4>
+                                    <p>Tactical / Stealth | Last played: 2 days ago</p>
+                                </div>
+                                <div class="linked-game-status"><span class="status-dot"></span> Linked</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-section" id="section-saves">
+                        <h3><i class="fas fa-cloud"></i> Cloud Saves</h3>
+                        <div class="saves-list" id="savesList">
+                            <div class="empty-state">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h4>No Cloud Saves Yet</h4>
+                                <p>Your game saves will appear here once you start playing and syncing.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-section" id="section-account">
+                        <h3><i class="fas fa-cog"></i> Account Settings</h3>
+                        <form class="settings-form" id="accountForm" onsubmit="updateAccount(event)">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-input" id="settingsUsername" disabled>
+                                <span class="input-hint">Username cannot be changed.</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Display Name</label>
+                                <input type="text" class="form-input" id="settingsDisplayName" placeholder="Enter display name">
+                            </div>
+                            <div class="form-group">
+                                <label>Email (Optional)</label>
+                                <input type="email" class="form-input" id="settingsEmail" placeholder="your@email.com">
+                                <span class="input-hint">Used for account recovery notifications.</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Bio</label>
+                                <input type="text" class="form-input" id="settingsBio" placeholder="Tell us about yourself...">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="align-self:flex-start;"><i class="fas fa-save"></i> Save Changes</button>
+                        </form>
+
+                        <div class="danger-zone">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                            <p>Once you delete your account, there is no going back. All your data including cloud saves will be permanently removed.</p>
+                            <button class="btn btn-danger btn-sm" onclick="deleteAccount()"><i class="fas fa-trash-alt"></i> Delete Account</button>
+                        </div>
+                    </div>
+
+                    <div class="content-section" id="section-security">
+                        <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                        <form class="settings-form" id="passwordForm" onsubmit="changePassword(event)">
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password" class="form-input" id="currentPassword" placeholder="Enter current password" required>
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" class="form-input" id="newPassword" placeholder="Enter new password" required oninput="checkPasswordStrength(this.value)">
+                                <div class="password-strength"><div class="password-strength-bar" id="passwordStrengthBar"></div></div>
+                                <span class="input-hint" id="passwordHint">Use at least 8 characters with letters and numbers.</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password</label>
+                                <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="align-self:flex-start;"><i class="fas fa-key"></i> Change Password</button>
+                        </form>
+
+                        <div style="margin-top:2rem;padding-top:2rem;border-top:1px solid rgba(99,102,241,0.1);">
+                            <h4 style="font-family:'Orbitron',sans-serif;margin-bottom:1rem;color:var(--text-primary);"><i class="fas fa-fingerprint"></i> Account Recovery</h4>
+                            <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1rem;">
+                                Forgot your password? You can recover your account using your username and a recovery code sent to your linked email.
+                            </p>
+                            <button class="btn btn-outline" onclick="openRecoveryModal()"><i class="fas fa-life-ring"></i> Recover Password</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign In / Sign Up Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('authModal')"><i class="fas fa-times"></i></button>
+            <img src="https://i.ibb.co.com/4wc1VLJy/20260620-111209.png" alt="SSIAVerse" class="modal-logo">
+            <h2 id="authModalTitle">Sign In</h2>
+            <p class="modal-subtitle" id="authModalSubtitle">Welcome back to the SSIAVerse</p>
+
+            <form class="modal-form" id="authForm" onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="authUsername" placeholder="Username" required autocomplete="username">
+                </div>
+                <div class="form-group" id="confirmPasswordGroup" style="display:none;">
+                    <input type="password" class="form-input" id="authConfirmPassword" placeholder="Confirm Password" autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-input" id="authPassword" placeholder="Password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary" id="authSubmitBtn">
+                    <span id="authBtnText">Sign In</span>
+                </button>
+            </form>
+
+            <div class="modal-footer">
+                <p id="authToggleText">Don't have an account? <a onclick="toggleAuthMode()">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Recovery Modal -->
+    <div class="modal-overlay" id="recoveryModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('recoveryModal')"><i class="fas fa-times"></i></button>
+            <img src="https://i.ibb.co.com/4wc1VLJy/20260620-111209.png" alt="SSIAVerse" class="modal-logo">
+            <h2>Recover Password</h2>
+            <p class="modal-subtitle">Reset your SSIAVerse account password</p>
+
+            <div class="recovery-steps">
+                <div class="recovery-info">
+                    <i class="fas fa-info-circle"></i>
+                    Enter your username below. If an email is associated with your account, we'll send recovery instructions.
+                </div>
+                <form class="modal-form" id="recoveryForm" onsubmit="handleRecovery(event)">
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="recoveryUsername" placeholder="Enter your username" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send Recovery Link</button>
+                </form>
+                <div class="modal-footer" style="margin-top:1rem;">
+                    <p>Remember your password? <a onclick="closeModal('recoveryModal');openSignInModal();">Sign In</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== FIREBASE CONFIG ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3LpTve-8c97k2yvS54nNY-gkNQF5S9u4",
+            authDomain: "ssiavc.firebaseapp.com",
+            projectId: "ssiavc",
+            storageBucket: "ssiavc.firebasestorage.app",
+            messagingSenderId: "96237914866",
+            appId: "1:96237914866:web:173eb41dc235b28cde5e6b",
+            measurementId: "G-ZQ22N7REDR"
+        };
+
+        let app, auth, db;
+        let currentUser = null;
+        let currentUsername = null;
+        let isSignUp = false;
+
+        try {
+            app = firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db = firebase.firestore();
+            console.log('Firebase initialized');
+        } catch (e) {
+            console.error('Firebase init error:', e);
+            showToast('Failed to initialize Firebase. Please refresh.', 'error');
+        }
+
+        // ==================== STAR BACKGROUND ====================
+        function createStars() {
+            const container = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--duration', (2 + Math.random() * 4) + 's');
+                star.style.setProperty('--opacity', 0.2 + Math.random() * 0.8);
+                star.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(star);
+            }
+        }
+        createStars();
+
+        // ==================== NAVBAR SCROLL ====================
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // ==================== TOAST NOTIFICATIONS ====================
+        function showToast(message, type) {
+            type = type || 'info';
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            const icons = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+            toast.innerHTML = '<i class="fas ' + icons[type] + '"></i><span>' + message + '</span>';
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ==================== AUTH STATE ====================
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                const storedUsername = localStorage.getItem('ssiavc_username');
+                if (storedUsername) {
+                    currentUsername = storedUsername;
+                } else {
+                    try {
+                        const snapshot = await db.collection('usernameMappings').where('uid', '==', user.uid).limit(1).get();
+                        if (!snapshot.empty) {
+                            currentUsername = snapshot.docs[0].id;
+                            localStorage.setItem('ssiavc_username', currentUsername);
+                        }
+                    } catch (e) { console.error(e); }
+                }
+                showDashboard();
+                updateNavForUser();
+                loadUserData();
+            } else {
+                currentUser = null;
+                currentUsername = null;
+                showHome();
+                updateNavForGuest();
+            }
+        });
+
+        function updateNavForUser() {
+            const navUser = document.getElementById('navUser');
+            const initial = currentUsername ? currentUsername.charAt(0).toUpperCase() : '?';
+            navUser.innerHTML = '<div class="user-avatar" onclick="showDashboard()" title="' + (currentUsername || 'User') + '">' + initial + '</div>';
+        }
+
+        function updateNavForGuest() {
+            document.getElementById('navUser').innerHTML = '<button class="btn btn-primary" onclick="openSignInModal()"><i class="fas fa-sign-in-alt"></i> Sign In</button>';
+        }
+
+        // ==================== PAGE NAVIGATION ====================
+        function showHome() {
+            document.getElementById('homePage').style.display = 'block';
+            document.getElementById('dashboard').classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showDashboard() {
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToGames() {
+            document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showSupport() {
+            showToast('Support center coming soon!', 'info');
+        }
+
+        // ==================== DASHBOARD SECTIONS ====================
+        function showSection(section) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            document.getElementById('section-' + section).classList.add('active');
+            const link = document.querySelector('.sidebar-menu a[data-section="' + section + '"]');
+            if (link) link.classList.add('active');
+        }
+
+        // ==================== MODALS ====================
+        function openSignInModal() {
+            isSignUp = false;
+            updateAuthModal();
+            document.getElementById('authModal').classList.add('active');
+            document.getElementById('authUsername').focus();
+        }
+
+        function openRecoveryModal() {
+            document.getElementById('recoveryModal').classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            if (id === 'authModal') {
+                document.getElementById('authForm').reset();
+                isSignUp = false;
+                updateAuthModal();
+            }
+            if (id === 'recoveryModal') {
+                document.getElementById('recoveryForm').reset();
+            }
+        }
+
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            updateAuthModal();
+        }
+
+        function updateAuthModal() {
+            document.getElementById('authModalTitle').textContent = isSignUp ? 'Sign Up' : 'Sign In';
+            document.getElementById('authModalSubtitle').textContent = isSignUp ? 'Join the SSIAVerse today' : 'Welcome back to the SSIAVerse';
+            document.getElementById('authBtnText').textContent = isSignUp ? 'Create Account' : 'Sign In';
+            document.getElementById('authToggleText').innerHTML = isSignUp
+                ? 'Already have an account? <a onclick="toggleAuthMode()">Sign In</a>'
+                : 'Don't have an account? <a onclick="toggleAuthMode()">Sign Up</a>';
+            document.getElementById('confirmPasswordGroup').style.display = isSignUp ? 'block' : 'none';
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('active'); });
+        });
+
+        // ==================== PASSWORD HASHING ====================
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password + 'ssiavc_salt_2026');
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // ==================== AUTHENTICATION ====================
+        async function handleAuth(e) {
+            e.preventDefault();
+            const username = document.getElementById('authUsername').value.trim().toLowerCase();
+            const password = document.getElementById('authPassword').value;
+            const confirmPassword = document.getElementById('authConfirmPassword').value;
+            const btn = document.getElementById('authSubmitBtn');
+            const originalText = btn.innerHTML;
+
+            if (!username || !password) {
+                showToast('Please fill in all fields', 'warning');
+                return;
+            }
+
+            if (isSignUp) {
+                if (password !== confirmPassword) {
+                    showToast('Passwords do not match', 'error');
+                    return;
+                }
+                if (password.length < 6) {
+                    showToast('Password must be at least 6 characters', 'warning');
+                    return;
+                }
+            }
+
+            btn.innerHTML = '<div class="spinner"></div>';
+            btn.disabled = true;
+
+            try {
+                if (isSignUp) {
+                    // SIGN UP
+                    const usernameDoc = await db.collection('usernameMappings').doc(username).get();
+                    if (usernameDoc.exists) {
+                        showToast('Username already taken. Please choose another.', 'error');
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        return;
+                    }
+
+                    const anonResult = await auth.signInAnonymously();
+                    const uid = anonResult.user.uid;
+
+                    await db.collection('usernameMappings').doc(username).set({
+                        uid: uid,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    await db.collection('accounts').doc(uid).set({
+                        username: username,
+                        displayName: username,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    const passwordHash = await hashPassword(password);
+                    localStorage.setItem('ssiavc_pass_' + username, passwordHash);
+                    localStorage.setItem('ssiavc_username', username);
+
+                    currentUsername = username;
+                    showToast('Account created successfully! Welcome to SSIAVerse.', 'success');
+                    closeModal('authModal');
+
+                } else {
+                    // SIGN IN
+                    const usernameDoc = await db.collection('usernameMappings').doc(username).get();
+                    if (!usernameDoc.exists) {
+                        showToast('Username not found. Please check or sign up.', 'error');
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        return;
+                    }
+
+                    const storedHash = localStorage.getItem('ssiavc_pass_' + username);
+                    const inputHash = await hashPassword(password);
+
+                    if (storedHash && storedHash !== inputHash) {
+                        showToast('Incorrect password. Please try again.', 'error');
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        return;
+                    }
+
+                    await auth.signInAnonymously();
+
+                    const uid = usernameDoc.data().uid;
+                    await db.collection('accounts').doc(uid).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    localStorage.setItem('ssiavc_username', username);
+                    currentUsername = username;
+                    showToast('Welcome back, ' + username + '!', 'success');
+                    closeModal('authModal');
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                showToast('Authentication failed: ' + (error.message || 'Unknown error'), 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // ==================== SIGN OUT ====================
+        async function signOut() {
+            try {
+                await auth.signOut();
+                localStorage.removeItem('ssiavc_username');
+                currentUsername = null;
+                currentUser = null;
+                showToast('Signed out successfully', 'info');
+                showHome();
+                updateNavForGuest();
+            } catch (error) {
+                showToast('Sign out failed: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== LOAD USER DATA ====================
+        async function loadUserData() {
+            if (!currentUser || !currentUsername) return;
+
+            try {
+                const uid = currentUser.uid;
+                const doc = await db.collection('accounts').doc(uid).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('profileName').textContent = data.displayName || currentUsername;
+                    document.getElementById('profileAvatar').textContent = (data.displayName || currentUsername).charAt(0).toUpperCase();
+                    document.getElementById('profileUid').textContent = 'UID: ' + uid.substring(0, 12) + '...';
+                    document.getElementById('settingsUsername').value = currentUsername;
+                    document.getElementById('settingsDisplayName').value = data.displayName || '';
+                    document.getElementById('settingsEmail').value = data.email || '';
+                    document.getElementById('settingsBio').value = data.bio || '';
+
+                    if (data.createdAt) {
+                        const date = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+                        document.getElementById('statMember').textContent = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                    }
+                }
+
+                // Load cloud saves count
+                const savesSnapshot = await db.collection('vaultsave').doc(currentUsername).collection('saves').get();
+                document.getElementById('statSaves').textContent = savesSnapshot.size;
+
+                // Load linked games count
+                const gamesSnapshot = await db.collection('accounts').doc(uid).collection('linkedGames').get();
+                document.getElementById('statGames').textContent = gamesSnapshot.size;
+
+                // Load saves list
+                loadSavesList(savesSnapshot);
+            } catch (error) {
+                console.error('Load user data error:', error);
+            }
+        }
+
+        function loadSavesList(snapshot) {
+            const container = document.getElementById('savesList');
+            if (snapshot.empty) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-cloud-upload-alt"></i><h4>No Cloud Saves Yet</h4><p>Your game saves will appear here once you start playing and syncing.</p></div>';
+                return;
+            }
+
+            let html = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const date = data.timestamp ? (data.timestamp.toDate ? data.timestamp.toDate().toLocaleString() : new Date(data.timestamp).toLocaleString()) : 'Unknown';
+                html += '<div class="save-item">' +
+                    '<div class="save-info"><div class="save-icon"><i class="fas fa-save"></i></div>' +
+                    '<div class="save-details"><h4>' + (data.gameName || 'Unknown Game') + '</h4><p>Slot ' + (data.slot || '1') + ' &bull; ' + date + '</p></div></div>' +
+                    '<div class="save-actions">' +
+                    '<button class="btn btn-outline btn-sm" onclick="downloadSave('' + doc.id + '')"><i class="fas fa-download"></i></button>' +
+                    '<button class="btn btn-danger btn-sm" onclick="deleteSave('' + doc.id + '')"><i class="fas fa-trash"></i></button>' +
+                    '</div></div>';
+            });
+            container.innerHTML = html;
+        }
+
+        // ==================== ACCOUNT SETTINGS ====================
+        async function updateAccount(e) {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const displayName = document.getElementById('settingsDisplayName').value.trim();
+            const email = document.getElementById('settingsEmail').value.trim();
+            const bio = document.getElementById('settingsBio').value.trim();
+
+            try {
+                await db.collection('accounts').doc(currentUser.uid).update({
+                    displayName: displayName || currentUsername,
+                    email: email,
+                    bio: bio,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                document.getElementById('profileName').textContent = displayName || currentUsername;
+                document.getElementById('profileAvatar').textContent = (displayName || currentUsername).charAt(0).toUpperCase();
+                showToast('Account settings saved successfully!', 'success');
+            } catch (error) {
+                showToast('Failed to save settings: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== CHANGE PASSWORD ====================
+        async function changePassword(e) {
+            e.preventDefault();
+            if (!currentUsername) return;
+
+            const currentPass = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                showToast('New passwords do not match', 'error');
+                return;
+            }
+            if (newPass.length < 6) {
+                showToast('Password must be at least 6 characters', 'warning');
+                return;
+            }
+
+            const storedHash = localStorage.getItem('ssiavc_pass_' + currentUsername);
+            const currentHash = await hashPassword(currentPass);
+
+            if (storedHash && storedHash !== currentHash) {
+                showToast('Current password is incorrect', 'error');
+                return;
+            }
+
+            const newHash = await hashPassword(newPass);
+            localStorage.setItem('ssiavc_pass_' + currentUsername, newHash);
+            showToast('Password changed successfully!', 'success');
+            document.getElementById('passwordForm').reset();
+            document.getElementById('passwordStrengthBar').className = '';
+        }
+
+        // ==================== PASSWORD STRENGTH ====================
+        function checkPasswordStrength(password) {
+            const bar = document.getElementById('passwordStrengthBar');
+            const hint = document.getElementById('passwordHint');
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+            bar.className = 'password-strength-bar';
+            if (strength <= 1) { bar.classList.add('strength-weak'); hint.textContent = 'Weak - Add more variety'; }
+            else if (strength === 2) { bar.classList.add('strength-medium'); hint.textContent = 'Medium - Could be stronger'; }
+            else { bar.classList.add('strength-strong'); hint.textContent = 'Strong password!'; }
+        }
+
+        // ==================== PASSWORD RECOVERY ====================
+        async function handleRecovery(e) {
+            e.preventDefault();
+            const username = document.getElementById('recoveryUsername').value.trim().toLowerCase();
+
+            try {
+                const usernameDoc = await db.collection('usernameMappings').doc(username).get();
+                if (!usernameDoc.exists) {
+                    showToast('Username not found', 'error');
+                    return;
+                }
+
+                const accountDoc = await db.collection('accounts').doc(usernameDoc.data().uid).get();
+                const email = accountDoc.exists ? accountDoc.data().email : null;
+
+                if (!email) {
+                    showToast('No recovery email linked to this account. Contact support.', 'warning');
+                    return;
+                }
+
+                // Generate recovery code
+                const recoveryCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+                await db.collection('accounts').doc(usernameDoc.data().uid).update({
+                    recoveryCode: recoveryCode,
+                    recoveryCodeExpiry: firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 3600000))
+                });
+
+                showToast('Recovery instructions sent to your linked email!', 'success');
+                closeModal('recoveryModal');
+            } catch (error) {
+                showToast('Recovery failed: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== DELETE ACCOUNT ====================
+        async function deleteAccount() {
+            if (!confirm('WARNING: This will permanently delete your account and all data. This action cannot be undone. Are you sure?')) return;
+            if (!confirm('FINAL WARNING: Type "DELETE" to confirm account deletion.')) return;
+
+            if (!currentUser || !currentUsername) return;
+
+            try {
+                // Delete username mapping
+                await db.collection('usernameMappings').doc(currentUsername).delete();
+                // Delete account data
+                await db.collection('accounts').doc(currentUser.uid).delete();
+                // Delete vault saves
+                const savesSnapshot = await db.collection('vaultsave').doc(currentUsername).collection('saves').get();
+                const batch = db.batch();
+                savesSnapshot.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+                // Delete vaultsave doc
+                await db.collection('vaultsave').doc(currentUsername).delete();
+
+                // Clear local storage
+                localStorage.removeItem('ssiavc_username');
+                localStorage.removeItem('ssiavc_pass_' + currentUsername);
+
+                // Sign out
+                await auth.signOut();
+                showToast('Account deleted successfully', 'info');
+            } catch (error) {
+                showToast('Failed to delete account: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== SAVE MANAGEMENT ====================
+        async function downloadSave(saveId) {
+            if (!currentUsername) return;
+            try {
+                const doc = await db.collection('vaultsave').doc(currentUsername).collection('saves').doc(saveId).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'save_' + saveId + '.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showToast('Save downloaded', 'success');
+                }
+            } catch (error) {
+                showToast('Download failed: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteSave(saveId) {
+            if (!confirm('Delete this save? This cannot be undone.')) return;
+            if (!currentUsername) return;
+            try {
+                await db.collection('vaultsave').doc(currentUsername).collection('saves').doc(saveId).delete();
+                showToast('Save deleted', 'success');
+                loadUserData();
+            } catch (error) {
+                showToast('Delete failed: ' + error.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
