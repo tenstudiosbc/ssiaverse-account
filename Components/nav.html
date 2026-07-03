@@ -1,0 +1,31 @@
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="#" class="nav-logo" onclick="showHome();return false;">
+            <img src="https://i.ibb.co.com/4wc1VLJy/20260620-111209.png" alt="SSIAVerse Logo">
+            <span>SSIAVerse</span>
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="#" class="nav-link" onclick="showHome();return false;">Home</a>
+            <a href="#games" class="nav-link" onclick="scrollToGames();return false;">Games</a>
+            <a href="#" class="nav-link" onclick="showSupport();return false;">Support</a>
+        </div>
+        <div class="nav-user" id="navUser">
+            <button class="btn btn-primary" onclick="openSignInModal()">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
+
+<div class="modal-overlay" id="mobileMenuOverlay" style="z-index:999;align-items:flex-start;padding-top:70px;">
+    <div style="background:var(--bg-card);border:1px solid rgba(99,102,241,0.2);border-radius:0 0 16px 16px;width:100%;max-width:400px;margin:0 auto;padding:1rem;">
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+            <a href="#" class="nav-link" style="padding:0.75rem;border-radius:8px;" onclick="showHome();closeMobileMenu();return false;"><i class="fas fa-home"></i> Home</a>
+            <a href="#games" class="nav-link" style="padding:0.75rem;border-radius:8px;" onclick="scrollToGames();closeMobileMenu();return false;"><i class="fas fa-gamepad"></i> Games</a>
+            <a href="#" class="nav-link" style="padding:0.75rem;border-radius:8px;" onclick="showSupport();closeMobileMenu();return false;"><i class="fas fa-headset"></i> Support</a>
+        </div>
+    </div>
+</div>

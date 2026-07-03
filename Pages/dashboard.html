@@ -1,0 +1,137 @@
+<div class="main-content">
+    <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+            <h2><i class="fas fa-th-large"></i> Dashboard</h2>
+            <button class="btn btn-outline btn-sm" onclick="signOut()">
+                <i class="fas fa-sign-out-alt"></i> Sign Out
+            </button>
+        </div>
+
+        <div class="dashboard-grid">
+            <aside class="sidebar">
+                <div class="profile-card">
+                    <div class="profile-avatar" id="profileAvatar">?</div>
+                    <div class="profile-name" id="profileName">Guest</div>
+                    <div class="profile-uid" id="profileUid">Not signed in</div>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active" onclick="showSection('overview');return false;" data-section="overview"><i class="fas fa-home"></i> Overview</a></li>
+                    <li><a href="#" onclick="showSection('games');return false;" data-section="games"><i class="fas fa-gamepad"></i> Linked Games</a></li>
+                    <li><a href="#" onclick="showSection('saves');return false;" data-section="saves"><i class="fas fa-cloud"></i> Cloud Saves</a></li>
+                    <li><a href="#" onclick="showSection('account');return false;" data-section="account"><i class="fas fa-cog"></i> Account Settings</a></li>
+                    <li><a href="#" onclick="showSection('security');return false;" data-section="security"><i class="fas fa-shield-alt"></i> Security</a></li>
+                </ul>
+            </aside>
+
+            <div class="dashboard-content">
+                <div class="content-section active" id="section-overview">
+                    <h3><i class="fas fa-chart-line"></i> Account Overview</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue"><i class="fas fa-gamepad"></i></div>
+                            <div class="stat-value" id="statGames">0</div>
+                            <div class="stat-label">Linked Games</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon cyan"><i class="fas fa-cloud"></i></div>
+                            <div class="stat-value" id="statSaves">0</div>
+                            <div class="stat-label">Cloud Saves</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple"><i class="fas fa-clock"></i></div>
+                            <div class="stat-value" id="statMember">New</div>
+                            <div class="stat-label">Member Since</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-value">Active</div>
+                            <div class="stat-label">Account Status</div>
+                        </div>
+                    </div>
+                    <h3 style="margin-top:1.5rem;"><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:0.75rem;">
+                        <button class="btn btn-primary" onclick="showSection('games')"><i class="fas fa-link"></i> Link a Game</button>
+                        <button class="btn btn-outline" onclick="showSection('saves')"><i class="fas fa-download"></i> Manage Saves</button>
+                        <button class="btn btn-outline" onclick="showSection('account')"><i class="fas fa-user-edit"></i> Edit Profile</button>
+                    </div>
+                </div>
+
+                <div class="content-section" id="section-games">
+                    <h3><i class="fas fa-gamepad"></i> Linked Games</h3>
+                    <div class="linked-games-list" id="linkedGamesList"></div>
+                </div>
+
+                <div class="content-section" id="section-saves">
+                    <h3><i class="fas fa-cloud"></i> Cloud Saves</h3>
+                    <div class="saves-list" id="savesList">
+                        <div class="empty-state">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h4>No Cloud Saves Yet</h4>
+                            <p>Your game saves will appear here once you start playing and syncing.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section" id="section-account">
+                    <h3><i class="fas fa-cog"></i> Account Settings</h3>
+                    <form class="settings-form" id="accountForm" onsubmit="updateAccount(event)">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" class="form-input" id="settingsUsername" disabled>
+                            <span class="input-hint">Username cannot be changed.</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Display Name</label>
+                            <input type="text" class="form-input" id="settingsDisplayName" placeholder="Enter display name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email (Optional)</label>
+                            <input type="email" class="form-input" id="settingsEmail" placeholder="your@email.com">
+                            <span class="input-hint">Used for account recovery notifications.</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <input type="text" class="form-input" id="settingsBio" placeholder="Tell us about yourself...">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="align-self:flex-start;"><i class="fas fa-save"></i> Save Changes</button>
+                    </form>
+
+                    <div class="danger-zone">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                        <p>Once you delete your account, there is no going back. All your data including cloud saves will be permanently removed.</p>
+                        <button class="btn btn-danger btn-sm" onclick="deleteAccount()"><i class="fas fa-trash-alt"></i> Delete Account</button>
+                    </div>
+                </div>
+
+                <div class="content-section" id="section-security">
+                    <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                    <form class="settings-form" id="passwordForm" onsubmit="changePassword(event)">
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <input type="password" class="form-input" id="currentPassword" placeholder="Enter current password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" class="form-input" id="newPassword" placeholder="Enter new password" required oninput="checkPasswordStrength(this.value)">
+                            <div class="password-strength"><div class="password-strength-bar" id="passwordStrengthBar"></div></div>
+                            <span class="input-hint" id="passwordHint">Use at least 8 characters with letters and numbers.</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="align-self:flex-start;"><i class="fas fa-key"></i> Change Password</button>
+                    </form>
+
+                    <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(99,102,241,0.1);">
+                        <h4 style="font-family:'Orbitron',sans-serif;margin-bottom:0.75rem;color:var(--text-primary);font-size:1.1rem;"><i class="fas fa-fingerprint"></i> Account Recovery</h4>
+                        <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:0.75rem;">
+                            Forgot your password? You can recover your account using your username and a recovery code.
+                        </p>
+                        <button class="btn btn-outline" onclick="openRecoveryModal()"><i class="fas fa-life-ring"></i> Recover Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

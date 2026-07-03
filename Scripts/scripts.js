@@ -60,6 +60,104 @@
             }, 4000);
         }
 
+        // ==================== DYNAMIC PAGE & COMPONENT LOADING ====================
+        const htmlCache = {};
+
+        async function fetchHtml(path) {
+            if (htmlCache[path]) return htmlCache[path];
+            const response = await fetch(path);
+            if (!response.ok) {
+                throw new Error("Failed to load: " + path + " (" + response.status + ")");
+            }
+            const html = await response.text();
+            htmlCache[path] = html;
+            return html;
+        }
+
+        async function loadComponent(name, containerSelector) {
+            const container = containerSelector
+                ? document.querySelector(containerSelector)
+                : document.querySelector('[data-component="' + name + '"]');
+            if (!container) return;
+
+            try {
+                container.innerHTML = await fetchHtml("Components/" + name + ".html");
+                await initLoadedComponents(container);
+            } catch (error) {
+                console.error("Component load error:", error);
+                container.innerHTML = '<div class="load-error">Component "' + name + '" failed to load.</div>';
+            }
+        }
+
+        async function loadComponentsInRoot(root = document) {
+            const placeholders = Array.from(root.querySelectorAll("[data-component]"));
+            await Promise.all(placeholders.map(async function(element) {
+                const name = element.dataset.component;
+                if (!name) return;
+                try {
+                    element.innerHTML = await fetchHtml("Components/" + name + ".html");
+                } catch (error) {
+                    console.error("Component placeholder load error:", name, error);
+                    element.innerHTML = '<div class="load-error">Component "' + name + '" failed to load.</div>';
+                }
+            }));
+            await initLoadedComponents(root);
+        }
+
+        async function loadPage(pageName) {
+            const pageRoot = document.getElementById("pageRoot");
+            if (!pageRoot) return;
+
+            pageRoot.innerHTML = '<div class="loading-state"><p>Loading page...</p></div>';
+            try {
+                const pageHtml = await fetchHtml("Pages/" + pageName + ".html");
+                pageRoot.innerHTML = pageHtml;
+                await loadComponentsInRoot(pageRoot);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                document.title = pageName === "dashboard"
+                    ? "Dashboard | SSIAVerse Account"
+                    : "SSIAVerse Account | Your Gateway to the SSIAVerse";
+                history.replaceState({ page: pageName }, "", "?page=" + pageName);
+            } catch (error) {
+                console.error("Page load error:", error);
+                pageRoot.innerHTML = '<div class="page-error"><h2>Page not found</h2><p>The requested page "' + pageName + '" could not be loaded.</p><button class="btn btn-primary" onclick="showHome()">Back to Home</button></div>';
+            }
+        }
+
+        async function initLoadedComponents(root = document) {
+            const mobileMenuBtn = root.querySelector("#mobileMenuBtn");
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener("click", function() {
+                    toggleMobileMenu();
+                });
+            }
+
+            const overlays = root.querySelectorAll(".modal-overlay");
+            overlays.forEach(function(overlay) {
+                overlay.addEventListener("click", function(e) {
+                    if (e.target === overlay) overlay.classList.remove("active");
+                });
+            });
+        }
+
+        async function loadAppShell() {
+            await loadComponent("nav", "#navRoot");
+            await loadComponent("modals", "#modalRoot");
+            const pageParam = new URLSearchParams(window.location.search).get("page") || "home";
+            await loadPage(pageParam);
+        }
+
+        window.addEventListener("popstate", function(event) {
+            const page = (event.state && event.state.page) || new URLSearchParams(window.location.search).get("page") || "home";
+            loadPage(page).catch(function(error) { console.error(error); });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadAppShell().catch(function(error) {
+                console.error("App shell load failed:", error);
+            });
+        });
+
         // ==================== AUTH STATE ====================
         auth.onAuthStateChanged(async function(user) {
             if (user) {
@@ -76,13 +174,13 @@
                         }
                     } catch (e) { console.error(e); }
                 }
-                showDashboard();
+                await showDashboard();
                 updateNavForUser();
                 loadUserData();
             } else {
                 currentUser = null;
                 currentUsername = null;
-                showHome();
+                await showHome();
                 updateNavForGuest();
             }
         });
@@ -98,20 +196,23 @@
         }
 
         // ==================== PAGE NAVIGATION ====================
-        function showHome() {
-            document.getElementById("homePage").style.display = "block";
-            document.getElementById("dashboard").classList.remove("active");
-            window.scrollTo({ top: 0, behavior: "smooth" });
+        async function showHome() {
+            await loadPage("home");
         }
 
-        function showDashboard() {
-            document.getElementById("homePage").style.display = "none";
-            document.getElementById("dashboard").classList.add("active");
-            window.scrollTo({ top: 0, behavior: "smooth" });
+        async function showDashboard() {
+            if (!currentUser) {
+                openSignInModal();
+                return;
+            }
+            await loadPage("dashboard");
         }
 
         function scrollToGames() {
-            document.getElementById("games").scrollIntoView({ behavior: "smooth" });
+            const target = document.getElementById("games");
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth" });
+            }
         }
 
         function showSupport() {
@@ -180,10 +281,6 @@
             }
             if (confirmGroup) confirmGroup.style.display = isSignUp ? "block" : "none";
         }
-
-        document.querySelectorAll(".modal-overlay").forEach(function(overlay) {
-            overlay.addEventListener("click", function(e) { if (e.target === overlay) overlay.classList.remove("active"); });
-        });
 
         // ==================== PASSWORD HASHING ====================
         async function hashPassword(password) {

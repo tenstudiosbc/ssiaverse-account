@@ -1,0 +1,52 @@
+<div class="modal-overlay" id="authModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('authModal')"><i class="fas fa-times"></i></button>
+        <img src="https://i.ibb.co.com/4wc1VLJy/20260620-111209.png" alt="SSIAVerse" class="modal-logo">
+        <h2 id="authModalTitle">Sign In</h2>
+        <p class="modal-subtitle" id="authModalSubtitle">Welcome back to the SSIAVerse</p>
+
+        <form class="modal-form" id="authForm" onsubmit="handleAuth(event)">
+            <div class="form-group">
+                <input type="text" class="form-input" id="authUsername" placeholder="Username" required autocomplete="username">
+            </div>
+            <div class="form-group" id="confirmPasswordGroup" style="display:none;">
+                <input type="password" class="form-input" id="authConfirmPassword" placeholder="Confirm Password" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-input" id="authPassword" placeholder="Password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary" id="authSubmitBtn">
+                <span id="authBtnText">Sign In</span>
+            </button>
+        </form>
+
+        <div class="modal-footer">
+            <p id="authToggleText">Do not have an account? <a onclick="toggleAuthMode()">Sign Up</a></p>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="recoveryModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('recoveryModal')"><i class="fas fa-times"></i></button>
+        <img src="https://i.ibb.co.com/4wc1VLJy/20260620-111209.png" alt="SSIAVerse" class="modal-logo">
+        <h2>Recover Password</h2>
+        <p class="modal-subtitle">Reset your SSIAVerse account password</p>
+
+        <div class="recovery-steps">
+            <div class="recovery-info">
+                <i class="fas fa-info-circle"></i>
+                Enter your username below. If an email is associated with your account, we will send recovery instructions.
+            </div>
+            <form class="modal-form" id="recoveryForm" onsubmit="handleRecovery(event)">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="recoveryUsername" placeholder="Enter your username" required>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send Recovery Link</button>
+            </form>
+            <div class="modal-footer" style="margin-top:1rem;">
+                <p>Remember your password? <a onclick="closeModal('recoveryModal');openSignInModal();">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+</div>
