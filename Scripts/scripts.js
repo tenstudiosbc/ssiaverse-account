@@ -119,7 +119,7 @@
         }
 
         function showGameDetail(game) {
-            showToast(game === "vc" ? "SSIA Vanguard Chronicles - Coming Soon" : "SSIA ShadowFront - Coming Soon", "info");
+            showToast(game === "vc" ? "SSIA Vanguard Chronicles - Is Available On PC(Windows) and Android" : "SSIA ShadowFront - Coming Soon", "info");
         }
 
         // ==================== DASHBOARD SECTIONS ====================
