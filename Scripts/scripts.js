@@ -65,9 +65,32 @@
 
         async function fetchHtml(path) {
             if (htmlCache[path]) return htmlCache[path];
-            const response = await fetch(path);
-            if (!response.ok) {
-                throw new Error("Failed to load: " + path + " (" + response.status + ")");
+            let response;
+            try {
+                response = await fetch(path);
+            } catch (e) {
+                // try absolute path next
+                try {
+                    response = await fetch('/' + path);
+                } catch (e2) {
+                    console.error('Fetch failed for', path, e, e2);
+                    throw new Error('Network error while fetching ' + path);
+                }
+            }
+            if (!response || !response.ok) {
+                // try leading slash if not already
+                if (path.charAt(0) !== '/') {
+                    const alt = '/' + path;
+                    try {
+                        response = await fetch(alt);
+                    } catch (e3) {
+                        console.error('Fetch failed for', path, alt, e3);
+                    }
+                }
+            }
+            if (!response || !response.ok) {
+                const status = response ? response.status : 'no-response';
+                throw new Error("Failed to load: " + path + " (" + status + ")");
             }
             const html = await response.text();
             htmlCache[path] = html;
@@ -113,6 +136,15 @@
                 const pageHtml = await fetchHtml("Pages/" + pageName + ".html");
                 pageRoot.innerHTML = pageHtml;
                 await loadComponentsInRoot(pageRoot);
+                // If the loaded page contains a dashboard element, ensure it's activated (CSS requires .dashboard.active)
+                const dashboards = pageRoot.querySelectorAll('.dashboard');
+                dashboards.forEach(function(d) { d.classList.add('active'); });
+                // Ensure at least one content-section is active inside the page root
+                const anyActive = pageRoot.querySelector('.content-section.active');
+                if (!anyActive) {
+                    const firstSection = pageRoot.querySelector('.content-section');
+                    if (firstSection) firstSection.classList.add('active');
+                }
                 window.scrollTo({ top: 0, behavior: "smooth" });
                 document.title = pageName === "dashboard"
                     ? "Dashboard | SSIAVerse Account"
@@ -120,7 +152,7 @@
                 history.replaceState({ page: pageName }, "", "?page=" + pageName);
             } catch (error) {
                 console.error("Page load error:", error);
-                pageRoot.innerHTML = '<div class="page-error"><h2>Page not found</h2><p>The requested page "' + pageName + '" could not be loaded.</p><button class="btn btn-primary" onclick="showHome()">Back to Home</button></div>';
+                    pageRoot.innerHTML = '<div class="page-error" style="padding:3rem;text-align:center;color:var(--text-secondary)"><h2>Page failed to load</h2><p style="margin:0.5rem 0 1rem;">The requested page "' + pageName + '" could not be loaded. (' + (error.message || 'unknown') + ')</p><div><button class="btn btn-primary" onclick="showHome()">Back to Home</button></div></div>';
             }
         }
 
@@ -225,11 +257,23 @@
 
         // ==================== DASHBOARD SECTIONS ====================
         function showSection(section) {
-            document.querySelectorAll(".content-section").forEach(function(s) { s.classList.remove("active"); });
-            document.querySelectorAll(".sidebar-menu a").forEach(function(a) { a.classList.remove("active"); });
-            document.getElementById("section-" + section).classList.add("active");
-            const link = document.querySelector('.sidebar-menu a[data-section="' + section + '"]');
-            if (link) link.classList.add("active");
+            const pageRoot = document.getElementById('pageRoot') || document;
+            // remove active from sections inside the current page root
+            Array.from(pageRoot.querySelectorAll('.content-section')).forEach(function(s) { s.classList.remove('active'); });
+            // remove active from sidebar links inside the root, fall back to document-wide
+            const sidebarLinks = pageRoot.querySelectorAll('.sidebar-menu a');
+            if (sidebarLinks.length) {
+                Array.from(sidebarLinks).forEach(function(a) { a.classList.remove('active'); });
+            } else {
+                document.querySelectorAll('.sidebar-menu a').forEach(function(a) { a.classList.remove('active'); });
+            }
+
+            const target = pageRoot.querySelector('#section-' + section) || document.getElementById('section-' + section);
+            if (target) target.classList.add('active');
+
+            let link = pageRoot.querySelector('.sidebar-menu a[data-section="' + section + '"]');
+            if (!link) link = document.querySelector('.sidebar-menu a[data-section="' + section + '"]');
+            if (link) link.classList.add('active');
         }
 
         // ==================== MODALS ====================
