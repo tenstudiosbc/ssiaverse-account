@@ -6,6 +6,12 @@
 //   • Linked games from RPG Maker MV are read from /accounts/{uid}/linkedGames/{gameId}
 //   • Recovery codes moved to /accounts/{uid}/recovery/{docId}
 //   • Added renderLinkedGames() to display linked RPG Maker MV games as "Linked"
+//   • FIXED: Public pages (privacy, terms) no longer redirect to dashboard when logged in
+//   • FIXED: auth state now respects current page URL, only redirects to dashboard on fresh auth
+//   • FIXED: loadPage no longer forces .dashboard active on non-dashboard pages
+//   • FIXED: Dynamic page titles for all pages
+//   • FIXED: showSection handles missing elements gracefully
+//   • FIXED: popstate preserves public page navigation for logged-in users
 // =================================================================================
 
 // ==================== FIREBASE INIT ====================
@@ -31,11 +37,33 @@ const GAME_META = {
     "ssia-sf": { name: "SSIA ShadowFront", platform: "Coming Soon" },
     "ssiavc-web": { name: "SSIAVerse Account", platform: "Web" }
 };
+
+// Pages that are PUBLIC (no auth required, no redirect to dashboard)
+const PUBLIC_PAGES = ["home", "privacy", "terms", "cookies", "eula", "about", "support"];
+
+// Page titles mapping
+const PAGE_TITLES = {
+    "home": "SSIAVerse Account | Your Gateway to the SSIAVerse",
+    "dashboard": "Dashboard | SSIAVerse Account",
+    "privacy": "Privacy Policy | SSIAVerse Account",
+    "terms": "Terms of Service | SSIAVerse Account",
+    "cookies": "Cookie Policy | SSIAVerse Account",
+    "eula": "EULA | SSIAVerse Account",
+    "about": "About | SSIAVerse Account",
+    "support": "Support | SSIAVerse Account"
+};
+
 function getGameName(gameId) {
     return (GAME_META[gameId] && GAME_META[gameId].name) || gameId;
 }
 function getGamePlatform(gameId) {
     return (GAME_META[gameId] && GAME_META[gameId].platform) || "Unknown";
+}
+function isPublicPage(pageName) {
+    return PUBLIC_PAGES.indexOf(pageName) !== -1;
+}
+function getPageTitle(pageName) {
+    return PAGE_TITLES[pageName] || "SSIAVerse Account | Your Gateway to the SSIAVerse";
 }
 
 // ==================== STAR BACKGROUND ====================
@@ -75,7 +103,7 @@ function showToast(message, type) {
     const toast = document.createElement("div");
     toast.className = "toast " + type;
     const icons = { success: "fa-check-circle", error: "fa-times-circle", warning: "fa-exclamation-triangle", info: "fa-info-circle" };
-    toast.innerHTML = '<i class="fas ' + icons[type] + '></i><span>' + message + "</span>";
+    toast.innerHTML = '<i class="fas ' + icons[type] + '"></i><span>' + message + "</span>";
     container.appendChild(toast);
     setTimeout(function() {
         toast.style.opacity = "0";
@@ -158,17 +186,20 @@ async function loadPage(pageName) {
         const pageHtml = await fetchHtml("Pages/" + pageName + ".html");
         pageRoot.innerHTML = pageHtml;
         await loadComponentsInRoot(pageRoot);
-        const dashboards = pageRoot.querySelectorAll('.dashboard');
-        dashboards.forEach(function(d) { d.classList.add('active'); });
-        const anyActive = pageRoot.querySelector('.content-section.active');
-        if (!anyActive) {
-            const firstSection = pageRoot.querySelector('.content-section');
-            if (firstSection) firstSection.classList.add('active');
+
+        // FIX: Only auto-activate dashboard elements if this IS the dashboard page
+        if (pageName === "dashboard") {
+            const dashboards = pageRoot.querySelectorAll('.dashboard');
+            dashboards.forEach(function(d) { d.classList.add('active'); });
+            const anyActive = pageRoot.querySelector('.content-section.active');
+            if (!anyActive) {
+                const firstSection = pageRoot.querySelector('.content-section');
+                if (firstSection) firstSection.classList.add('active');
+            }
         }
+
         window.scrollTo({ top: 0, behavior: "smooth" });
-        document.title = pageName === "dashboard"
-            ? "Dashboard | SSIAVerse Account"
-            : "SSIAVerse Account | Your Gateway to the SSIAVerse";
+        document.title = getPageTitle(pageName);
         history.replaceState({ page: pageName }, "", "?page=" + pageName);
     } catch (error) {
         console.error("Page load error:", error);
@@ -201,7 +232,12 @@ async function loadAppShell() {
 
 window.addEventListener("popstate", function(event) {
     const page = (event.state && event.state.page) || new URLSearchParams(window.location.search).get("page") || "home";
-    loadPage(page).catch(function(error) { console.error(error); });
+    // FIX: Don't force auth redirect on public pages during popstate
+    if (currentUser && !isPublicPage(page) && page !== "dashboard") {
+        loadPage("dashboard").catch(function(error) { console.error(error); });
+    } else {
+        loadPage(page).catch(function(error) { console.error(error); });
+    }
 });
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -226,13 +262,30 @@ auth.onAuthStateChanged(async function(user) {
                 }
             } catch (e) { console.error(e); }
         }
-        await showDashboard();
-        updateNavForUser();
-        loadUserData();
+
+        // FIX: Check current page from URL before deciding to redirect
+        const currentPage = new URLSearchParams(window.location.search).get("page") || "home";
+        if (isPublicPage(currentPage)) {
+            // Stay on public page, just update nav
+            updateNavForUser();
+        } else if (currentPage === "home") {
+            // Only redirect to dashboard if on home page (fresh login)
+            await showDashboard();
+            updateNavForUser();
+            loadUserData();
+        } else {
+            // On dashboard or other auth page, load user data
+            updateNavForUser();
+            loadUserData();
+        }
     } else {
         currentUser = null;
         currentUsername = null;
-        await showHome();
+        // FIX: Don't redirect logged-out users away from public pages
+        const currentPage = new URLSearchParams(window.location.search).get("page") || "home";
+        if (!isPublicPage(currentPage) && currentPage !== "home") {
+            await showHome();
+        }
         updateNavForGuest();
     }
 });
@@ -260,6 +313,24 @@ async function showDashboard() {
     await loadPage("dashboard");
 }
 
+// FIX: Added navigation functions for public pages
+async function showPrivacy() {
+    await loadPage("privacy");
+}
+
+async function showTerms() {
+    await loadPage("terms");
+}
+
+async function showPage(pageName) {
+    // Generic page loader for any page
+    if (!isPublicPage(pageName) && !currentUser && pageName !== "home") {
+        openSignInModal();
+        return;
+    }
+    await loadPage(pageName);
+}
+
 function scrollToGames() {
     const target = document.getElementById("games");
     if (target) {
@@ -278,12 +349,21 @@ function showGameDetail(game) {
 // ==================== DASHBOARD SECTIONS ====================
 function showSection(section) {
     const pageRoot = document.getElementById('pageRoot') || document;
-    Array.from(pageRoot.querySelectorAll('.content-section')).forEach(function(s) { s.classList.remove('active'); });
+
+    // FIX: Guard against missing elements on non-dashboard pages
+    const sections = pageRoot.querySelectorAll('.content-section');
+    if (sections.length === 0) return; // Not a dashboard page
+
+    Array.from(sections).forEach(function(s) { s.classList.remove('active'); });
+
     const sidebarLinks = pageRoot.querySelectorAll('.sidebar-menu a');
     if (sidebarLinks.length) {
         Array.from(sidebarLinks).forEach(function(a) { a.classList.remove('active'); });
     } else {
-        document.querySelectorAll('.sidebar-menu a').forEach(function(a) { a.classList.remove('active'); });
+        const globalLinks = document.querySelectorAll('.sidebar-menu a');
+        if (globalLinks.length) {
+            Array.from(globalLinks).forEach(function(a) { a.classList.remove('active'); });
+        }
     }
 
     const target = pageRoot.querySelector('#section-' + section) || document.getElementById('section-' + section);
