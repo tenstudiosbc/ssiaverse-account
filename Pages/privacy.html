@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — SSIAVerse Account</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #111111;
+        }
+        .subtitle {
+            font-size: 1rem;
+            color: #666666;
+            margin-bottom: 6px;
+        }
+        .last-updated {
+            font-size: 0.9rem;
+            color: #888888;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-top: 36px;
+            margin-bottom: 16px;
+            color: #222222;
+        }
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 10px;
+            color: #333333;
+        }
+        p {
+            margin-bottom: 14px;
+            text-align: justify;
+        }
+        ul {
+            margin-left: 24px;
+            margin-bottom: 16px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .highlight-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #1a73e8;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .highlight-box strong {
+            color: #1a73e8;
+        }
+        .transparency-badge {
+            display: inline-block;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .footer {
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e5e5;
+            font-size: 0.85rem;
+            color: #888888;
+            text-align: center;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "SF Mono", "Consolas", monospace;
+            font-size: 0.9em;
+        }
+        a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .email-box {
+            background-color: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 12px 0;
+        }
+        .email-box .label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888888;
+            margin-bottom: 4px;
+        }
+        .email-box .email {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a73e8;
+        }
+        .email-box .desc {
+            font-size: 0.85rem;
+            color: #666666;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="transparency-badge">TSBC Games Transparency Commitment</div>
+        <h1>Privacy Policy</h1>
+        <p class="subtitle">SSIAVerse Account Services</p>
+        <p class="last-updated">Last Updated: July 14, 2026</p>
+
+        <p>
+            At <strong>TSBC Games Division</strong> (a division of TenStudios Broadcasting Community), we believe that trust is the foundation of every great gaming experience. This Privacy Policy explains how we collect, process, store, and protect your personal information when you create and use a <strong>SSIAVerse Account</strong> — your gateway to the SSIAVerse universe, including titles such as <em>SSIA Vanguard Chronicles</em> and <em>SSIA ShadowFront</em>.
+        </p>
+
+        <p>
+            We are committed to <strong>TSBC Games Transparency</strong>: we will always tell you exactly what data we collect, why we collect it, and how we keep it safe. If you have any questions about this policy, you can reach us at the contact information provided at the end of this document.
+        </p>
+
+        <h2>1. Information We Collect</h2>
+        <p>When you create a SSIAVerse Account, we collect the following information:</p>
+        <ul>
+            <li><strong>Username:</strong> A display name you choose to identify yourself within the SSIAVerse ecosystem.</li>
+            <li><strong>Password Hash:</strong> We do <em>not</em> store your plain-text password. Instead, we store a securely hashed version of your password using industry-standard cryptographic methods (see Section 3 for full technical details).</li>
+            <li><strong>Anonymous Authentication ID:</strong> A unique identifier generated by Firebase when you sign in anonymously, used to associate your account data with your session.</li>
+            <li><strong>Game Progress & Preferences:</strong> Save data, settings, and in-game preferences tied to your account.</li>
+        </ul>
+        <p>
+            <strong>We do not collect:</strong> your real name, email address, phone number, physical address, payment information, or any government-issued identification. SSIAVerse Accounts are designed to be pseudonymous by default.
+        </p>
+
+        <h2>2. How We Collect Your Information</h2>
+        <p>
+            SSIAVerse uses <strong>Firebase Firestore</strong> as our backend database service, provided by Google. Account creation and authentication are handled through <strong>Firebase Anonymous Authentication</strong>. This means:
+        </p>
+        <ul>
+            <li>You can start playing immediately without providing an email or phone number.</li>
+            <li>Firebase generates a unique, anonymous User ID (UID) for your session.</li>
+            <li>Your username and password hash are stored in Firestore under your anonymous UID.</li>
+            <li>All data is transmitted over encrypted HTTPS connections.</li>
+        </ul>
+
+        <h2>3. Password Security & Hashing</h2>
+        <div class="highlight-box">
+            <strong>Transparency Notice:</strong> Your plain-text password is never stored on our servers or in Firestore. The moment you type your password, it is hashed using <strong>PBKDF2 (Password-Based Key Derivation Function 2)</strong> with <strong>SHA-256</strong> as the underlying pseudorandom function (HMAC-SHA-256), combined with a unique cryptographic salt per user.
+        </div>
+        <p>Here is exactly how your password is protected:</p>
+        <ul>
+            <li><strong>Salting:</strong> A unique, randomly generated salt is created for every account. This ensures that even if two users choose the same password, their stored hashes will be completely different.</li>
+            <li><strong>Iterative Hashing (PBKDF2):</strong> The hashing process is intentionally repeated thousands of times. This "stretching" makes brute-force attacks computationally infeasible, even if an attacker gains access to the hash database.</li>
+            <li><strong>One-Way Function:</strong> The hash is mathematically irreversible. There is no way to derive your original password from the stored hash.</li>
+            <li><strong>Storage:</strong> Only the final hash and its associated salt are stored in Firestore. Your original password exists only in your memory and is never logged or cached by our systems.</li>
+        </ul>
+
+        <h2>4. How We Use Your Information</h2>
+        <p>We use the data we collect solely for the following purposes:</p>
+        <ul>
+            <li>To authenticate your identity when you log into your SSIAVerse Account.</li>
+            <li>To store and synchronize your game progress, settings, and preferences across devices.</li>
+            <li>To maintain the security and integrity of our services (e.g., detecting suspicious login attempts).</li>
+            <li>To provide customer support when you contact us regarding your account.</li>
+        </ul>
+        <p><strong>We do not use your data for:</strong> targeted advertising, selling to third parties, building behavioral profiles for marketing, or any purpose beyond operating and securing your SSIAVerse Account.</p>
+
+        <h2>5. Data Sharing & Third Parties</h2>
+        <p>
+            TSBC Games Division does not sell, rent, or trade your personal information. The only third-party service provider with access to your account data is <strong>Google Firebase</strong>, which hosts our Firestore database and handles anonymous authentication on our behalf. Google processes this data under their own privacy policies and security standards.
+        </p>
+        <p>
+            We do not share your data with advertisers, analytics companies, social media platforms, or other game studios unless required by law or to protect our legal rights.
+        </p>
+
+        <h2>6. Data Retention</h2>
+        <p>
+            We retain your account data for as long as your SSIAVerse Account remains active. If your account is inactive for an extended period (24 months or more), we may delete your data after providing notice. You can also request deletion of your account and all associated data at any time (see Section 8).
+        </p>
+
+        <h2>7. Security Measures</h2>
+        <p>TSBC Games Division implements multiple layers of security to protect your information:</p>
+        <ul>
+            <li><strong>Firebase Security Rules:</strong> Firestore access is restricted so that users can only read and write data associated with their own anonymous UID.</li>
+            <li><strong>Firebase App Check:</strong> We enforce that only legitimate requests from our official SSIAVerse applications can access our backend services.</li>
+            <li><strong>Encrypted Transmission:</strong> All data sent between your device and Firestore is encrypted using TLS/SSL.</li>
+            <li><strong>Hashed Passwords:</strong> As detailed in Section 3, passwords are never stored in plain text.</li>
+            <li><strong>Regular Audits:</strong> We periodically review our security practices and Firebase configurations to identify and address potential vulnerabilities.</li>
+        </ul>
+
+        <h2>8. Your Rights & Choices</h2>
+        <p>As a SSIAVerse Account holder, you have the following rights:</p>
+        <ul>
+            <li><strong>Access:</strong> You can request a copy of the data we hold about your account.</li>
+            <li><strong>Correction:</strong> You can update your username or password at any time through the in-game account settings.</li>
+            <li><strong>Deletion:</strong> You can request the permanent deletion of your account and all associated data. Upon confirmation, we will remove your data from Firestore within 30 days.</li>
+            <li><strong>Portability:</strong> You can request an export of your game progress and settings in a commonly used format.</li>
+        </ul>
+        <p>To exercise any of these rights, please contact us using the information in Section 12.</p>
+
+        <h2>9. Children's Privacy (COPPA Compliance)</h2>
+        <p>
+            SSIAVerse games are not specifically directed at children under the age of 13. If you are under 13, please do not create a SSIAVerse Account without verifiable parental consent. If we discover that we have inadvertently collected data from a child under 13 without proper consent, we will delete that data immediately.
+        </p>
+
+        <h2>10. International Data Transfers</h2>
+        <p>
+            Firebase Firestore servers may be located in various regions around the world. By using a SSIAVerse Account, you consent to the transfer and processing of your data in jurisdictions where Firebase operates, which may include countries outside your own. Google maintains appropriate safeguards for international data transfers.
+        </p>
+
+        <h2>11. Changes to This Privacy Policy</h2>
+        <p>
+            We may update this Privacy Policy from time to time to reflect changes in our practices, technology, or legal requirements. When we make material changes, we will update the "Last Updated" date at the top of this page and notify users through in-game announcements or other prominent means. We encourage you to review this policy periodically.
+        </p>
+
+        <h2>12. Contact Us</h2>
+        <p>
+            If you have questions, concerns, or requests regarding this Privacy Policy or your SSIAVerse Account data, please contact the TSBC Games Division at the appropriate email below. We have dedicated channels so your inquiry reaches the right team as quickly as possible.
+        </p>
+
+        <div class="email-box">
+            <div class="label">General Games & Development Inquiries</div>
+            <div class="email">tengames.dev.id@gmail.com</div>
+            <div class="desc">For questions about SSIAVerse Account features, game development, or general TSBC Games matters.</div>
+        </div>
+
+        <div class="email-box">
+            <div class="label">Studio & Community Affairs</div>
+            <div class="email">tenstudiosbc.id@gmail.com</div>
+            <div class="desc">For community-related questions, partnership inquiries, or matters concerning TenStudios Broadcasting Community as a whole.</div>
+        </div>
+
+        <div class="email-box">
+            <div class="label">SSIA Vanguard Chronicles Support</div>
+            <div class="email">ssiavc.tenstudiosbc@gmail.com</div>
+            <div class="desc">For game-specific support, bug reports, or account issues related to SSIA Vanguard Chronicles.</div>
+        </div>
+
+        <p style="margin-top: 16px;">
+            <strong>Response Time:</strong> We aim to respond to all privacy-related inquiries within 14 business days. For urgent security concerns, please mark your subject line with <code>[SECURITY]</code> so we can prioritize it.
+        </p>
+
+        <div class="highlight-box">
+            <strong>TSBC Games Transparency Pledge:</strong> We believe players deserve to know exactly how their data is handled. This policy is written in plain language, not legal jargon, because transparency is not just a compliance checkbox — it is a core value of the SSIAVerse and everything we build at TSBC.
+        </div>
+
+        <div class="footer">
+            <p>© 2026 TenStudios Broadcasting Community (TSBC) — Games Division. All rights reserved.</p>
+            <p>SSIAVerse, SSIA Vanguard Chronicles, and SSIA ShadowFront are trademarks of TSBC.</p>
+            <p>This Privacy Policy is effective as of July 14, 2026.</p>
+        </div>
+    </div>
+</body>
+</html>
